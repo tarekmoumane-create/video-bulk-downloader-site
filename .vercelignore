@@ -2,3 +2,4 @@ dev.mjs
 dev_fetch.py
 .env.local
 .claude
+__pycache__
