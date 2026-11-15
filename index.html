@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Download TikTok, Instagram and YouTube videos in bulk. Full quality, no watermark. Free, right in your browser or on your Mac.">
+<meta name="description" content="Download TikTok and Instagram videos in bulk. Full quality, no watermark. Free, right in your browser or on your Mac.">
 <title>Video Downloader</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -164,13 +164,13 @@
 <body>
 <main>
   <h1>Download videos in bulk.</h1>
-  <p class="lede">TikTok, Instagram, YouTube. Paste a pile of links and get every video back in full quality, no watermark. Free, right here or on your Mac. Importing straight from a Google Sheet is $4.99 a month.</p>
+  <p class="lede">TikTok and Instagram. Paste a pile of links and get every video back in full quality, no watermark. Free, right here or on your Mac.</p>
 
   <div class="get">
     <a href="download/Video-Downloader-mac.zip" download>Download for Mac</a>
     <a class="quiet" href="https://github.com/tarekmoumane-create/video-bulk-downloader">Source</a>
   </div>
-  <p class="note">YouTube works in the Mac app. macOS 11 or later. The first time, right-click the app and choose Open.</p>
+  <p class="note">macOS 11 or later. The first time, right-click the app and choose Open.</p>
 
   <section class="tool demo" id="tool" aria-label="Video downloader">
     <div class="sources" role="tablist">
@@ -181,7 +181,7 @@
 
     <div class="panel" id="panel">
       <div class="pane on" id="paste">
-        <textarea id="pasteBox" aria-label="Video links" readonly placeholder="Paste TikTok, Instagram, or YouTube links, one per line. Messy text is fine, the links get picked out."></textarea>
+        <textarea id="pasteBox" aria-label="Video links" readonly placeholder="Paste TikTok or Instagram links, one per line. Messy text is fine, the links get picked out."></textarea>
       </div>
 
       <div class="pane" id="sheet">
@@ -268,13 +268,13 @@ const store = {
 const DEMO_LINKS = [
   "https://www.tiktok.com/@mira.cooks/video/7301928475610294561",
   "https://www.instagram.com/reel/C8xQ2LmR4tP/",
-  "https://www.youtube.com/shorts/q3Zt9KkW1sE",
+  "https://www.instagram.com/reel/DA7vLq2Nx9w/",
   "https://www.tiktok.com/@dan.outside/video/7299410238845120811",
 ];
 const DEMO_CLIPS = [
   { who: "mira.cooks", site: "TikTok", hue: 18 },
   { who: "studio.lune", site: "Instagram", hue: 280 },
-  { who: "Field Notes", site: "YouTube", hue: 200 },
+  { who: "field.notes", site: "Instagram", hue: 200 },
   { who: "dan.outside", site: "TikTok", hue: 140 },
 ];
 
