@@ -70,6 +70,15 @@ export async function isActive(customer) {
   }
 }
 
+/** Where to send someone back to: the website for web buyers, the Mac app otherwise. */
+export function returnBase(req, from) {
+  if (from !== 'web') return APP;
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '');
+  const local = /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host);
+  if (!local && !/^[a-z0-9-]+\.vercel\.app$/i.test(host) && host !== process.env.SITE_HOST) return APP;
+  return `${local ? 'http' : 'https'}://${host}`;
+}
+
 export const isKey = (key) => typeof key === 'string' && /^cus_[A-Za-z0-9]{6,40}$/.test(key);
 
 export async function readJson(req) {

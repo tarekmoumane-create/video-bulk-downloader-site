@@ -1,4 +1,4 @@
-import { APP, HttpError, handle, isKey, readJson, send, stripe } from './_stripe.js';
+import { HttpError, handle, isKey, readJson, returnBase, send, stripe } from './_stripe.js';
 
 async function portalConfig() {
   const found = await stripe('/billing_portal/configurations', { query: { active: true, limit: 1 } });
@@ -18,11 +18,11 @@ async function portalConfig() {
 
 // POST /api/portal { key } -> { url } where the subscriber can cancel or change their card.
 export default handle(['POST'], async (req, res) => {
-  const { key } = await readJson(req);
+  const { key, from } = await readJson(req);
   if (!isKey(key)) throw new HttpError(400, 'Bad key');
   const session = await stripe('/billing_portal/sessions', {
     method: 'POST',
-    body: { customer: key, return_url: `${APP}/`, configuration: await portalConfig() },
+    body: { customer: key, return_url: `${returnBase(req, from)}/`, configuration: await portalConfig() },
   });
   send(res, 200, { url: session.url });
 });

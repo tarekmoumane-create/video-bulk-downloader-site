@@ -1,3 +1,4 @@
 dev.mjs
+dev_fetch.py
 .env.local
 .claude
