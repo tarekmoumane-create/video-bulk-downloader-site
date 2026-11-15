@@ -1,0 +1,6 @@
+{
+  "name": "video-downloader-site",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "node dev.mjs" }
+}
