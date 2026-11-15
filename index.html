@@ -3,648 +3,180 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Download videos from TikTok, Instagram, and YouTube in bulk with no watermark.">
+  <meta name="description" content="Download videos from TikTok, Instagram, and YouTube in bulk. Free. Open source.">
   <title>Video Bulk Downloader</title>
   <style>
-    :root {
-      --bg: #fafaf9;
-      --surface: #ffffff;
-      --text: #1c1c1c;
-      --text-muted: #78716e;
-      --accent: #ea580c;
-      --accent-light: rgba(234, 88, 12, 0.1);
-      --border: #e7e5e4;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* Header / Nav */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 999;
-      background: rgba(250, 250, 249, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    nav {
-      max-width: 1200px;
+    main {
+      max-width: 800px;
       margin: 0 auto;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 80px 40px;
     }
 
-    .logo {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo span {
-      width: 24px;
-      height: 24px;
-      background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
+    h1 {
+      font-size: 48px;
       font-weight: 700;
-      color: white;
+      margin-bottom: 32px;
+      line-height: 1.2;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
+    h2 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 60px 0 32px;
     }
 
-    .nav-links a {
-      color: var(--text);
-      text-decoration: none;
+    p {
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      opacity: 0.7;
+    }
+
+    code {
+      background: #111;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', monospace;
       font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
-      position: relative;
     }
 
-    .nav-links a:hover {
-      color: var(--accent);
+    pre {
+      background: #111;
+      border: 1px solid #333;
+      padding: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 24px 0;
     }
 
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent);
-      transition: width 0.3s;
+    pre code {
+      background: none;
+      padding: 0;
+      color: #aaa;
     }
 
-    .nav-links a:hover::after {
-      width: 100%;
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 20px;
     }
 
-    /* Hero */
-    .hero {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 140px 24px 80px;
-      text-align: center;
-    }
-
-    .hero h1 {
-      font-size: clamp(36px, 5vw, 64px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 24px;
-      line-height: 1.1;
-    }
-
-    .hero p {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.6;
-    }
-
-    .platforms {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 48px;
-      flex-wrap: wrap;
-    }
-
-    .platform-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      background: var(--accent-light);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    .cta-group {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
+    li {
+      margin-bottom: 12px;
+      color: #ccc;
     }
 
     .btn {
-      padding: 12px 32px;
-      border-radius: 8px;
-      font-size: 15px;
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 32px;
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      border-radius: 4px;
       font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 15px;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: white;
+    .btn:hover {
+      opacity: 0.9;
     }
 
-    .btn-primary:hover {
-      background: #d97706;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(234, 88, 12, 0.2);
-    }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg);
-      border-color: var(--text-muted);
-    }
-
-    /* Features */
-    .features {
-      max-width: 1200px;
-      margin: 120px auto 0;
-      padding: 80px 24px;
-      background: linear-gradient(135deg, var(--surface) 0%, rgba(234, 88, 12, 0.02) 100%);
-      border-top: 1px solid var(--border);
-    }
-
-    .features h2 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 40px;
-      margin-bottom: 60px;
-    }
-
-    .feature-card {
-      padding: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: all 0.3s;
-    }
-
-    .feature-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
-    }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--accent-light);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-
-    .feature-card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .feature-card p {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    /* How it works */
-    .how-it-works {
-      max-width: 1200px;
-      margin: 120px auto 0;
-      padding: 80px 24px;
-    }
-
-    .how-it-works h2 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 32px;
-      margin-bottom: 60px;
-    }
-
-    .step {
-      position: relative;
-      padding-left: 48px;
-    }
-
-    .step::before {
-      content: attr(data-step);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .step h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .step p {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    /* Setup */
-    .setup {
-      max-width: 1200px;
-      margin: 120px auto 0;
-      padding: 80px 24px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-    }
-
-    .setup h2 {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .setup-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: start;
-    }
-
-    @media (max-width: 768px) {
-      .setup-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .setup-content h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .setup-content p {
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.7;
-    }
-
-    .setup-list {
-      list-style: none;
-      margin-top: 24px;
-    }
-
-    .setup-list li {
-      padding: 12px 0;
-      color: var(--text-muted);
-      font-size: 14px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .setup-list li::before {
-      content: '✓';
-      color: var(--accent);
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .code-block {
-      background: #1c1c1c;
-      color: #e7e5e4;
-      padding: 20px;
-      border-radius: 10px;
-      overflow-x: auto;
-      font-family: 'Monaco', 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      margin-top: 24px;
-    }
-
-    .code-block code {
-      display: block;
-      white-space: pre;
-    }
-
-    /* Footer */
     footer {
-      max-width: 1200px;
-      margin: 120px auto 0;
-      padding: 60px 24px;
-      border-top: 1px solid var(--border);
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid #333;
       text-align: center;
-      color: var(--text-muted);
+      color: #666;
       font-size: 13px;
     }
 
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    /* Animations */
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero h1,
-    .hero p,
-    .platforms,
-    .cta-group {
-      animation: slideIn 0.6s ease-out forwards;
-    }
-
-    .hero p {
-      animation-delay: 0.1s;
-    }
-
-    .platforms {
-      animation-delay: 0.2s;
-    }
-
-    .cta-group {
-      animation-delay: 0.3s;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      nav {
-        padding: 12px 16px;
+    @media (max-width: 640px) {
+      main {
+        padding: 60px 24px;
       }
 
-      .nav-links {
-        gap: 16px;
-        font-size: 13px;
+      h1 {
+        font-size: 36px;
       }
 
-      .logo {
-        font-size: 16px;
-      }
-
-      .hero {
-        padding: 100px 20px 60px;
-      }
-
-      .platforms {
-        gap: 12px;
-      }
-
-      .cta-group {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn {
-        width: 100%;
-        justify-content: center;
+      h2 {
+        font-size: 24px;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="logo">
-        <span>▼</span>
-        Video Bulk Downloader
-      </div>
-      <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#how">How it works</a></li>
-        <li><a href="#setup">Setup</a></li>
-        <li><a href="https://github.com/tarekmoumane/video-bulk-downloader" target="_blank">GitHub</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <main>
-    <section class="hero">
-      <h1>Download videos, your way.</h1>
-      <p>No watermarks, full quality. Download from TikTok, Instagram, and YouTube in bulk. Free. Open source. Run locally.</p>
+    <h1>Video Bulk Downloader</h1>
 
-      <div class="platforms">
-        <span class="platform-badge">🎵 TikTok</span>
-        <span class="platform-badge">📸 Instagram</span>
-        <span class="platform-badge">▶️ YouTube</span>
-      </div>
+    <p>Download videos from TikTok, Instagram, and YouTube in bulk. No watermarks, full quality. Free. Open source. Runs locally on your machine.</p>
 
-      <div class="cta-group">
-        <a href="#setup" class="btn btn-primary">Get started</a>
-        <a href="https://github.com/tarekmoumane/video-bulk-downloader" target="_blank" class="btn btn-secondary">View on GitHub</a>
-      </div>
-    </section>
+    <a href="https://github.com/tarekmoumane/video-bulk-downloader" class="btn">View on GitHub</a>
 
-    <section id="features" class="features">
-      <h2>Why you'll love it</h2>
-      <div class="grid">
-        <div class="feature-card">
-          <div class="feature-icon">🎥</div>
-          <h3>Three platforms</h3>
-          <p>Download from TikTok, Instagram, and YouTube with the same simple interface.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">✨</div>
-          <h3>No watermarks</h3>
-          <p>Get the highest quality videos without any platform watermarks.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Bulk downloads</h3>
-          <p>Paste links, upload a spreadsheet, or connect a Google Sheet. Download hundreds at once.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>100% private</h3>
-          <p>Runs on your machine. No accounts, no tracking, no data collection.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">☁️</div>
-          <h3>Optional Drive sync</h3>
-          <p>Automatically save downloads to your Google Drive for easy access anywhere.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📂</div>
-          <h3>Organized storage</h3>
-          <p>Videos are organized by date and time in your Downloads folder.</p>
-        </div>
-      </div>
-    </section>
+    <h2>Features</h2>
+    <ul>
+      <li>Download from TikTok, Instagram, and YouTube</li>
+      <li>Paste links, upload CSV/Excel, or connect Google Sheets</li>
+      <li>Full quality, no watermarks</li>
+      <li>100% private - runs on your computer</li>
+      <li>Optional: Save to Google Drive automatically</li>
+      <li>Organize videos by date</li>
+    </ul>
 
-    <section id="how" class="how-it-works">
-      <h2>How it works</h2>
-      <div class="steps">
-        <div class="step" data-step="1">
-          <h3>Add videos</h3>
-          <p>Paste links directly, upload a CSV file, or connect a Google Sheet with video URLs.</p>
-        </div>
-        <div class="step" data-step="2">
-          <h3>Download</h3>
-          <p>Click one button. The app downloads all videos in the highest quality available.</p>
-        </div>
-        <div class="step" data-step="3">
-          <h3>Save</h3>
-          <p>Videos are saved to ~/Downloads/Videos with creator names and metadata.</p>
-        </div>
-        <div class="step" data-step="4">
-          <h3>Share (optional)</h3>
-          <p>Optionally upload everything to Google Drive with one click.</p>
-        </div>
-      </div>
-    </section>
+    <h2>Get started</h2>
+    <p>You need Python 3.7 or later.</p>
 
-    <section id="setup" class="setup">
-      <h2>Get started in 2 minutes</h2>
-      <div class="setup-grid">
-        <div class="setup-content">
-          <h3>What you need</h3>
-          <ul class="setup-list">
-            <li>Python 3.7 or later</li>
-            <li>A terminal (or command prompt)</li>
-            <li>5 minutes of your time</li>
-          </ul>
-          <p style="margin-top: 32px;">Optional: If you want to save videos to Google Drive, you'll need to set up rclone once. We have clear instructions for that.</p>
-        </div>
-        <div class="setup-content">
-          <h3>Installation</h3>
-          <div class="code-block"><code>git clone https://github.com/tarekmoumane/video-bulk-downloader.git
+    <pre><code>git clone https://github.com/tarekmoumane/video-bulk-downloader.git
 cd video-bulk-downloader
 pip install requests openpyxl
 python -m pip install -U yt-dlp
-python3 server.py</code></div>
-          <p style="margin-top: 16px; font-size: 13px;">Then open <code style="background: var(--accent-light); padding: 2px 6px; border-radius: 4px;">http://127.0.0.1:8765</code> in your browser.</p>
-        </div>
-      </div>
-    </section>
+python3 server.py</code></pre>
+
+    <p>Then open <code>http://127.0.0.1:8765</code> in your browser.</p>
+
+    <h2>How it works</h2>
+    <ol>
+      <li><strong>Add videos:</strong> Paste links, upload a file, or connect a Google Sheet</li>
+      <li><strong>Download:</strong> Click one button to download all videos</li>
+      <li><strong>Get files:</strong> Videos saved to <code>~/Downloads/Videos/</code></li>
+      <li><strong>Optional:</strong> Upload to Google Drive with one click</li>
+    </ol>
+
+    <h2>Google Drive setup (optional)</h2>
+    <p>If you want to save downloads to Google Drive, install and set up rclone once:</p>
+    <pre><code>brew install rclone
+rclone config
+
+# Choose 'n' for new remote
+# Name it: gdrive
+# Choose option 15 (Google Drive)
+# Follow the prompts to authorize
+# Done!</code></pre>
+
+    <footer>
+      <p>Free and open source. <a href="https://github.com/tarekmoumane/video-bulk-downloader">GitHub</a></p>
+    </footer>
   </main>
-
-  <footer>
-    <div class="footer-links">
-      <a href="https://github.com/tarekmoumane/video-bulk-downloader" target="_blank">GitHub</a>
-      <a href="https://github.com/tarekmoumane/video-bulk-downloader#readme" target="_blank">Documentation</a>
-      <a href="https://github.com/tarekmoumane/video-bulk-downloader/issues" target="_blank">Support</a>
-    </div>
-    <p>Free and open source. Made with care.</p>
-  </footer>
-
-  <script>
-    // Smooth scroll for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-          e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      });
-    });
-
-    // Subtle scroll effect on feature cards
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.feature-card, .step').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      observer.observe(el);
-    });
-  </script>
 </body>
 </html>
