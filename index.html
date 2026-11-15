@@ -1,165 +1,239 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Download videos from TikTok, Instagram, and YouTube in bulk. Free. Open source.">
-  <title>Video Bulk Downloader</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Download TikTok, Instagram and YouTube videos in bulk. Full quality, no watermark. Free, runs on your Mac.">
+<title>Video Downloader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --panel: #121215;
+    --raise: #19191d;
+    --line: rgba(255,255,255,.08);
+    --line-strong: rgba(255,255,255,.16);
+    --ink: #f5f5f7;
+    --muted: #8a8a93;
+    --dim: #5b5b63;
+    --white: #ffffff;
+    --cyan: #25f4ee;
+    --pink: #fe2c55;
+    --font: "Geist", -apple-system, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font);
+         -webkit-font-smoothing: antialiased; }
+  main { max-width: 1040px; margin: 0 auto; padding: 72px 24px 96px; }
 
-    body {
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-    }
+  h1 { font-size: clamp(34px, 5vw, 52px); font-weight: 500; letter-spacing: -0.04em; line-height: 1.02; margin: 0; }
+  .lede { color: var(--muted); font-size: 15px; margin: 14px 0 28px; max-width: 46ch; }
 
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 80px 40px;
-    }
+  .get { display: flex; align-items: baseline; gap: 22px; flex-wrap: wrap; }
+  .get a { color: var(--ink); font-weight: 500; text-decoration: underline; text-underline-offset: 4px;
+           text-decoration-color: var(--line-strong); transition: text-decoration-color .15s; }
+  .get a:hover { text-decoration-color: var(--ink); }
+  .get a.quiet { color: var(--muted); font-weight: 400; }
+  .note { color: var(--dim); font-size: 13px; margin: 10px 0 0; }
 
-    h1 {
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 32px;
-      line-height: 1.2;
-    }
+  /* the demo: a copy of the app, playing itself */
+  .demo { margin-top: 64px; max-width: 720px; pointer-events: none; user-select: none; transition: opacity .5s; }
+  .demo.fade { opacity: 0; }
+  .sources { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 8px;
+             background: var(--panel); margin-bottom: 14px; }
+  .tab { border-radius: 6px; padding: 7px 14px; color: var(--muted); font-weight: 500; font-size: 14px; }
+  .tab.on { background: var(--raise); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .panel { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+  .box { min-height: 168px; padding: 22px 22px; line-height: 1.7; white-space: pre-wrap; word-break: break-all;
+         color: var(--ink); font-size: 14.5px; }
+  .box .ph { color: var(--dim); }
+  .caret { display: inline-block; width: 1px; height: 1.1em; background: var(--ink); vertical-align: -0.2em;
+           margin-left: 1px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .go-row { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            padding: 14px 16px; border-top: 1px solid var(--line); }
+  .count { color: var(--muted); font-size: 14px; }
+  .count strong { color: var(--ink); font-weight: 500; }
+  .btn { border: 1px solid var(--line); border-radius: 8px; padding: 11px 20px; font-weight: 500; font-size: 14px;
+         background: var(--raise); color: var(--dim); white-space: nowrap; transition: background .2s, color .2s, transform .12s; }
+  .btn.ready { background: var(--white); color: #000; border-color: var(--white); }
+  .btn.press { transform: scale(.96); }
 
-    h2 {
-      font-size: 32px;
-      font-weight: 700;
-      margin: 60px 0 32px;
-    }
+  .results { margin-top: 48px; opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s; }
+  .results.on { opacity: 1; transform: none; }
+  .status { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .progress { height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: 24px; }
+  .progress i { display: block; height: 100%; width: 0; transition: width .5s ease;
+                background: linear-gradient(90deg, var(--cyan), var(--pink)); }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .frame { position: relative; aspect-ratio: 9 / 16; border-radius: 8px; overflow: hidden; background: var(--panel);
+           border: 1px solid var(--line); }
+  .frame .fill { position: absolute; inset: 0; opacity: 0; transition: opacity .6s; }
+  .clip.done .fill { opacity: 1; }
+  .state { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; color: var(--muted); }
+  .clip.done .state { display: none; }
+  .clip.downloading .frame { border-color: transparent; background:
+      linear-gradient(var(--panel), var(--panel)) padding-box,
+      linear-gradient(140deg, var(--cyan), var(--pink), var(--cyan)) border-box;
+      background-size: 100% 100%, 200% 200%; animation: sweep 2.2s linear infinite; }
+  @keyframes sweep { to { background-position: 0 0, 200% 200%; } }
+  .badge { position: absolute; left: 8px; bottom: 8px; font-size: 11px; font-weight: 500; padding: 3px 7px;
+           border-radius: 5px; color: var(--white); background: rgba(0,0,0,.55); opacity: 0; transition: opacity .6s; }
+  .clip.done .badge { opacity: 1; }
+  .cap { margin-top: 10px; font-size: 13px; line-height: 1.4; min-height: 37px; }
+  .cap .who { color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cap .spec { color: var(--dim); font-size: 12px; }
 
-    p {
-      margin-bottom: 20px;
-      color: #ccc;
-    }
+  footer { margin-top: 96px; color: var(--dim); font-size: 13px; }
+  footer a { color: var(--muted); }
 
-    a {
-      color: #fff;
-      text-decoration: underline;
-    }
-
-    a:hover {
-      opacity: 0.7;
-    }
-
-    code {
-      background: #111;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Monaco', monospace;
-      font-size: 14px;
-    }
-
-    pre {
-      background: #111;
-      border: 1px solid #333;
-      padding: 20px;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 24px 0;
-    }
-
-    pre code {
-      background: none;
-      padding: 0;
-      color: #aaa;
-    }
-
-    ul, ol {
-      margin-left: 24px;
-      margin-bottom: 20px;
-    }
-
-    li {
-      margin-bottom: 12px;
-      color: #ccc;
-    }
-
-    footer {
-      margin-top: 80px;
-      padding-top: 40px;
-      border-top: 1px solid #333;
-      color: #666;
-      font-size: 13px;
-    }
-
-    @media (max-width: 640px) {
-      main {
-        padding: 60px 24px;
-      }
-
-      h1 {
-        font-size: 36px;
-      }
-
-      h2 {
-        font-size: 24px;
-      }
-    }
-  </style>
+  @media (max-width: 560px) {
+    main { padding: 48px 16px 72px; }
+    .demo { margin-top: 48px; }
+    .tab { flex: 1; padding: 7px 8px; text-align: center; }
+    .sources { display: flex; }
+    .box { min-height: 150px; padding: 16px; font-size: 13px; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
 </head>
 <body>
-  <main>
-    <h1>Video Bulk Downloader</h1>
+<main>
+  <h1>Download videos in bulk.</h1>
+  <p class="lede">TikTok, Instagram, YouTube. Paste a pile of links and get every video back in full quality, no watermark. Free, and it runs on your own Mac.</p>
 
-    <p>Download videos from TikTok, Instagram, and YouTube in bulk. No watermarks, full quality. Free. Open source. Runs locally on your machine.</p>
+  <div class="get">
+    <a href="download/Video-Downloader-mac.zip" download>Download for Mac</a>
+    <a class="quiet" href="https://github.com/tarekmoumane-create/video-bulk-downloader">Source</a>
+  </div>
+  <p class="note">macOS 11 or later. The first time, right-click the app and choose Open.</p>
 
-    <p><a href="https://github.com/tarekmoumane/video-bulk-downloader/releases">Download</a></p>
+  <div class="demo" id="demo" aria-hidden="true">
+    <div class="sources">
+      <div class="tab on">Paste links</div>
+      <div class="tab">Google Sheet</div>
+      <div class="tab">Upload file</div>
+    </div>
+    <div class="panel">
+      <div class="box" id="box"></div>
+      <div class="go-row">
+        <div class="count" id="count"><strong>0</strong> videos found</div>
+        <div class="btn" id="go">Download videos</div>
+      </div>
+    </div>
+    <div class="results" id="results">
+      <div class="status" id="status"></div>
+      <div class="progress"><i id="prog"></i></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
 
-    <h2>Features</h2>
-    <ul>
-      <li>Download from TikTok, Instagram, and YouTube</li>
-      <li>Paste links, upload CSV/Excel, or connect Google Sheets</li>
-      <li>Full quality, no watermarks</li>
-      <li>100% private - runs on your computer</li>
-      <li>Optional: Save to Google Drive automatically</li>
-      <li>Organize videos by date</li>
-    </ul>
+  <footer>Free and open source.</footer>
+</main>
 
-    <h2>Get started</h2>
-    <p>You need Python 3.7 or later.</p>
+<script>
+const LINKS = [
+  "https://www.tiktok.com/@mira.cooks/video/7301928475610294561",
+  "https://www.instagram.com/reel/C8xQ2LmR4tP/",
+  "https://www.youtube.com/shorts/q3Zt9KkW1sE",
+  "https://www.tiktok.com/@dan.outside/video/7299410238845120811",
+];
+const CLIPS = [
+  { who: "mira.cooks", spec: "TikTok · 1080×1920", hue: 18 },
+  { who: "studio.lune", spec: "Instagram · 1080×1920", hue: 280 },
+  { who: "Field Notes", spec: "YouTube · 1080×1920", hue: 200 },
+  { who: "dan.outside", spec: "TikTok · 1080×1920", hue: 140 },
+];
+const $ = (id) => document.getElementById(id);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const box = $("box"), go = $("go"), grid = $("grid");
 
-    <pre><code>git clone https://github.com/tarekmoumane/video-bulk-downloader.git
-cd video-bulk-downloader
-pip install requests openpyxl
-python -m pip install -U yt-dlp
-python3 server.py</code></pre>
+function setCount(n) {
+  $("count").innerHTML = `<strong>${n}</strong> video${n === 1 ? "" : "s"} found`;
+  go.textContent = n ? `Download ${n} video${n === 1 ? "" : "s"}` : "Download videos";
+  go.classList.toggle("ready", n > 0);
+}
 
-    <p>Then open <code>http://127.0.0.1:8765</code> in your browser.</p>
+function render(text, caret = true) {
+  box.innerHTML = text
+    ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;") + (caret ? '<span class="caret"></span>' : "")
+    : '<span class="ph">Paste TikTok, Instagram, or YouTube links, one per line.</span>';
+}
 
-    <h2>How it works</h2>
-    <ol>
-      <li><strong>Add videos:</strong> Paste links, upload a file, or connect a Google Sheet</li>
-      <li><strong>Download:</strong> Click one button to download all videos</li>
-      <li><strong>Get files:</strong> Videos saved to <code>~/Downloads/Videos/</code></li>
-      <li><strong>Optional:</strong> Upload to Google Drive with one click</li>
-    </ol>
+function buildGrid() {
+  grid.innerHTML = CLIPS.map((c) => `
+    <div class="clip">
+      <div class="frame">
+        <div class="fill" style="background:linear-gradient(165deg,hsl(${c.hue} 35% 26%),hsl(${c.hue + 40} 30% 9%))"></div>
+        <div class="state">Waiting</div>
+        <div class="badge">${c.spec.split(" · ")[1]}</div>
+      </div>
+      <div class="cap"><div class="who">${c.who}</div><div class="spec">${c.spec.split(" · ")[0]}</div></div>
+    </div>`).join("");
+  return [...grid.children];
+}
 
-    <h2>Google Drive setup (optional)</h2>
-    <p>If you want to save downloads to Google Drive, install and set up rclone once:</p>
-    <pre><code>brew install rclone
-rclone config
+function setDone(done) {
+  $("prog").style.width = (done / CLIPS.length) * 100 + "%";
+  $("status").textContent = done === CLIPS.length
+    ? `${done} videos saved`
+    : `Saving ${CLIPS.length} videos, ${done} done`;
+}
 
-# Choose 'n' for new remote
-# Name it: gdrive
-# Choose option 15 (Google Drive)
-# Follow the prompts to authorize
-# Done!</code></pre>
+function finalFrame() {
+  render(LINKS.join("\n"), false); setCount(LINKS.length);
+  $("results").classList.add("on");
+  buildGrid().forEach((el) => el.classList.add("done"));
+  setDone(CLIPS.length);
+}
 
-    <footer>
-      <p>Free and open source. <a href="https://github.com/tarekmoumane/video-bulk-downloader">GitHub</a></p>
-    </footer>
-  </main>
+async function loop() {
+  for (;;) {
+    $("demo").classList.remove("fade");
+    $("results").classList.remove("on");
+    render(""); setCount(0); grid.innerHTML = "";
+    await sleep(900);
+
+    let text = "";
+    for (let i = 0; i < LINKS.length; i++) {
+      for (const ch of LINKS[i]) { text += ch; render(text); await sleep(12 + Math.random() * 20); }
+      setCount(i + 1);
+      if (i < LINKS.length - 1) { text += "\n"; await sleep(240); }
+    }
+    render(text, false);
+    await sleep(650);
+    go.classList.add("press"); await sleep(140); go.classList.remove("press");
+
+    const clips = buildGrid();
+    setDone(0);
+    $("results").classList.add("on");
+    await sleep(350);
+
+    // three at a time, like the app
+    let done = 0;
+    const one = async (i, wait) => {
+      await sleep(wait);
+      clips[i].classList.add("downloading");
+      clips[i].querySelector(".state").textContent = "Downloading";
+      await sleep(1300 + Math.random() * 900);
+      clips[i].classList.remove("downloading");
+      clips[i].classList.add("done");
+      setDone(++done);
+    };
+    await Promise.all([one(0, 0), one(1, 200), one(2, 400).then(() => one(3, 0))]);
+
+    await sleep(3200);
+    $("demo").classList.add("fade");
+    await sleep(600);
+  }
+}
+
+if (matchMedia("(prefers-reduced-motion: reduce)").matches) finalFrame();
+else loop();
+</script>
 </body>
 </html>
