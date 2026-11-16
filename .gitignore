@@ -8,3 +8,9 @@ build/
 *.log
 .vercel
 __pycache__/
+.env.*
+!.env.example
+logs/
+*.mp4
+*.mov
+.next/
